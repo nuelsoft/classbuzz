@@ -26,6 +26,7 @@ public class LecturesFragmentActivity extends Fragment {
         viewPager = v.findViewById(R.id.lectures_viewPager);
         tabLayout = v.findViewById(R.id.daySelectionTab);
 
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 

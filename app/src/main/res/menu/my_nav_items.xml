@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action1"
+        android:icon="@drawable/nav_course_24dp"
+        android:text="One"
+        android:title="Lectures" />
+    <item
+        android:id="@+id/action2"
+        android:icon="@drawable/ic_library_books_black_24dp"
+        android:text="Two"
+        android:title="Courses" />
+    <item
+        android:id="@+id/action3"
+        android:icon="@drawable/ic_nav_notifications_24dp"
+        android:text="Three"
+        android:title="Buzz" />
+</menu>

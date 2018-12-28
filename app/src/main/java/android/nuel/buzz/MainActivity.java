@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        recyclerAdapter = new RecyclerAdapter(this);
+        recyclerAdapter = new UniversalRecyclerAdapter("channel",null,this);
         channelRecyclerView.setAdapter(recyclerAdapter);
         layoutManager = new GridLayoutManager(this,1);
         channelRecyclerView.setLayoutManager(layoutManager);

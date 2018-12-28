@@ -4,10 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="1dp"
+    android:layout_marginTop="6dp"
     android:background="@drawable/lecture_item_background"
     android:elevation="2dp"
-    android:padding="2dp">
+    android:paddingBottom="2dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#ccc"
+        app:layout_constraintBottom_toTopOf="@+id/isFixed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/courseTitle"
@@ -17,7 +30,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:text="Introduction to Programming II"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +42,9 @@
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:text="12:00 - 1:00"
-        android:textSize="14sp"
+        android:layout_marginTop="16dp"
+        android:drawableLeft="@drawable/ic_access_time_black_24dp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/duration"
         app:layout_constraintHorizontal_bias="0.5"
@@ -40,17 +52,16 @@
         app:layout_constraintTop_toBottomOf="@+id/courseCode" />
 
     <TextView
-        android:id="@+id/unitLoad"
+        android:id="@+id/unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="2 units"
         android:textSize="10sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/location"
+        app:layout_constraintBottom_toTopOf="@+id/venue"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/location" />
+        app:layout_constraintTop_toBottomOf="@+id/courseCode" />
 
     <TextView
         android:id="@+id/duration"
@@ -58,35 +69,35 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="duration: 2 hrs"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/timeDifference"
-        app:layout_constraintEnd_toStartOf="@+id/location"
+        app:layout_constraintEnd_toStartOf="@+id/venue"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/timeDifference" />
 
     <TextView
-        android:id="@+id/location"
-        android:layout_width="0dp"
+        android:id="@+id/venue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:text="FPSLT"
+        android:drawableLeft="@drawable/ic_location_on_black_24dp"
+        android:gravity="center"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/duration"
-        app:layout_constraintEnd_toStartOf="@+id/unitLoad"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/duration" />
 
     <TextView
         android:id="@+id/courseCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="COS201"
-        android:textSize="12sp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/courseTitle"
         app:layout_constraintTop_toBottomOf="@+id/courseTitle" />
 
@@ -96,8 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:text="fixed"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
