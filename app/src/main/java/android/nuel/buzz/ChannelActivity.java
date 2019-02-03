@@ -12,10 +12,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ChannelActivity extends AppCompatActivity {
 
@@ -23,7 +28,16 @@ public class ChannelActivity extends AppCompatActivity {
     TabLayout tabLayout;
     BottomNavigationView bottomNavigationView;
     FrameLayout includedFragment;
+    Bundle receivedIntent;
 
+
+    TextView titleBar;
+    ImageView backButton;
+
+    public static int position;
+
+    private static final String TAG = "ChannelActivity";
+    public static String currentChannel = "";
 
     public Context ChannelActivity() {
         return this;
@@ -34,10 +48,26 @@ public class ChannelActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        receivedIntent = getIntent().getExtras();
+//        position = receivedIntent.getInt("CURRENT_INTENT");
 
         bottomNavigationView = findViewById(R.id.bottom_nav_layout);
         includedFragment = findViewById(R.id.includedFragment);
+        backButton = findViewById(R.id.innerChannelBackButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            goBack();
+            }
+        });
+
+        titleBar = findViewById(R.id.channelTitle);
+        titleBar.setText(currentChannel);
+
+
         startLectureFragment();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -58,9 +88,10 @@ public class ChannelActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
-
-
 
     FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -70,6 +101,7 @@ public class ChannelActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.includedFragment, new LecturesFragmentActivity());
 
         fragmentTransaction.commit();
+
     }
     private void startCoursesFragment(){
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -84,30 +116,37 @@ public class ChannelActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void setupViewPager(@NonNull ViewPager viewPager) {
-        TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-
-        pagerAdapter.addFragment(new LecturesFragmentActivity(), "Lectures");
-        pagerAdapter.addFragment(new CoursesFragmentActivity(), "Courses");
-        pagerAdapter.addFragment(new BuzzFragmentActivity(), "Buzz");
-        viewPager.setAdapter(pagerAdapter);
+    private void goBack(){
+        this.dispatchKeyEvent(new KeyEvent( KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+        this.dispatchKeyEvent(new KeyEvent( KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu_resource, menu);
+//
+//    private void setupViewPager(@NonNull ViewPager viewPager) {
+//        TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+//
+//        pagerAdapter.addFragment(new LecturesFragmentActivity(), "Lectures");
+//        pagerAdapter.addFragment(new CoursesFragmentActivity(), "Courses");
+//        pagerAdapter.addFragment(new BuzzFragmentActivity(), "Buzz");
+//        viewPager.setAdapter(pagerAdapter);
+//
+//    }
 
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == android.R.id.home){
+//            finish();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.main_menu_resource, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
 
 }

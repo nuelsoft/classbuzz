@@ -24,7 +24,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Introduction to Programming II"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +36,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:text="COS207"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +51,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:drawableLeft="@drawable/ic_person_pin_black_24dp"
-        android:text="Office: Room 331 Abuja Building"
         app:layout_constraintEnd_toStartOf="@+id/course_course_unit"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +62,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
-        android:text="3 unit(s)"
         app:layout_constraintBaseline_toBaselineOf="@+id/course_lecturer_office"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -80,8 +76,18 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="8dp"
         android:drawableLeft="@drawable/ic_person_black_24dp"
-        android:text="Prof Adyemi Samuel"
         app:layout_constraintBaseline_toBaselineOf="@+id/course_course_code"
         app:layout_constraintEnd_toStartOf="@+id/course_course_code"
         app:layout_constraintStart_toStartOf="@+id/course_lecturer_office" />
+
+    <ImageView
+        android:id="@+id/courseChecked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_selected_24dp" />
 </android.support.constraint.ConstraintLayout>

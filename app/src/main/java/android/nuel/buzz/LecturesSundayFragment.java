@@ -34,7 +34,7 @@ public class LecturesSundayFragment extends Fragment {
 
 
 
-        recyclerAdapter = new UniversalRecyclerAdapter("lecture","sun", null);
+        recyclerAdapter = new UniversalRecyclerAdapter("lecture","sun", null, new ChannelActivity().position);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerLayout = new GridLayoutManager(this.getActivity(),1);
         recyclerView.setLayoutManager(recyclerLayout);

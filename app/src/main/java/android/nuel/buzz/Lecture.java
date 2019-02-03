@@ -10,10 +10,11 @@ public class Lecture {
     private int unitLoad;
     private int  lectureDuration;
     private boolean isFixed;
+    private String channelTag;
 
 
     public Lecture(String courseTitle, String courseCode, String startTime, String endTime, String location,
-                   int unitLoad, int lectureDuration, boolean isFixed, String dayOfTheWeek) {
+                   int unitLoad, int lectureDuration, boolean isFixed, String dayOfTheWeek, String channelTag) {
         this.courseTitle = courseTitle;
         this.courseCode = courseCode;
         this.startTime = startTime;
@@ -23,6 +24,7 @@ public class Lecture {
         this.lectureDuration = lectureDuration;
         this.isFixed = isFixed;
         this.dayOfTheWeek = dayOfTheWeek;
+        this.channelTag = channelTag;
     }
 
     public String getCourseTitle() {
@@ -60,4 +62,22 @@ public class Lecture {
     public String getDayOfTheWeek() {
         return dayOfTheWeek;
     }
+
+    public String getChannelTag() {
+        return channelTag;
+    }
+
+
+
+    //This Method is for the purpose of validation, to make sure an Item isn't added
+    //  ...twice
+
+    public String compile(){
+        String lectureCompilation = courseTitle + courseCode + startTime + endTime
+                + location + unitLoad + lectureDuration + isFixed + dayOfTheWeek + channelTag;
+
+        return lectureCompilation;
+    }
+
+
 }

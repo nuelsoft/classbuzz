@@ -1,40 +1,55 @@
 package android.nuel.buzz;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<Channel> Channels = new ArrayList<>();
+    ResourceBox resourceBox = new ResourceBox();
+
+
+    private ArrayList<Channel> Channels = resourceBox.ChannelResource;
     Context channelContext;
 
-    private ArrayList<Lecture> lectureSchedules = new ArrayList<>();
-    private ArrayList<Lecture> lecturesInDay = new ArrayList<>();
-
-    private ArrayList<Course> Courses = new ArrayList<>();
-
-    private ArrayList<Buzzer> Buzzers = new ArrayList<>();
-
     String filter;
+    int currentIndex;
+    private ArrayList<Lecture> lecturesInDay = new ArrayList<>();
+    private static final String TAG = "UniversalRecyclerAdater";
 
+    ChannelActivity channelActivity = new ChannelActivity();
+    MainActivity mainActivity = new MainActivity();
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         //ChannelFragmentDeclaration
         public TextView channelName;
         public TextView channelTag;
         public TextView channelMembers;
         public TextView currentNewNotifications;
         public TextView channelLocation;
+        public ImageView isSelected;
         public View layout;
+
+
 
         //LectureFragmentDeclaration
         public TextView courseTitle;
@@ -44,18 +59,21 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
         public TextView isFixed;
         public TextView location;
         public TextView unitLoad;
+        private TextView lectureNullMessage;
 
         //CourseFragmentDeclaration
-        public TextView courses_courseTitle;
-        public TextView courses_courseCode;
+        public TextView course_courseTitle;
+        public TextView course_courseCode;
         public TextView lecturerName;
         public TextView lecturerOffice;
         public TextView courseUnitLoad;
+        private TextView courseNullMessage;
 
         //BuzzFragmentDeclaration
         public TextView buzzDescription;
         public TextView buzzTime;
         public ImageView buzzCategory;
+        private TextView buzzNullMessage;
 
         public ViewHolder(View v) {
             super(v);
@@ -66,6 +84,7 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
             channelLocation = v.findViewById(R.id.channelLocation);
             channelMembers = v.findViewById(R.id.membership);
             currentNewNotifications = v.findViewById(R.id.newNotifications);
+            isSelected = v.findViewById(R.id.isSelected);
 
             //LectureFragmentInstantiate
             courseTitle = v.findViewById(R.id.courseTitle);
@@ -75,13 +94,15 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
             isFixed = v.findViewById(R.id.isFixed);
             location = v.findViewById(R.id.venue);
             unitLoad = v.findViewById(R.id.unit);
+            lectureNullMessage = v.findViewById(R.id.nullMessage);
 
-            //CoursesFragmentInitiate
-            courses_courseTitle = v.findViewById(R.id.course_course_title);
-            courses_courseCode = v.findViewById(R.id.course_course_code);
+            //Channels.get(currentIndex).channelCourses.ragmentInitiate
+            course_courseTitle = v.findViewById(R.id.course_course_title);
+            course_courseCode = v.findViewById(R.id.course_course_code);
             lecturerName = v.findViewById(R.id.course_lecturer_name);
             lecturerOffice = v.findViewById(R.id.course_lecturer_office);
             courseUnitLoad = v.findViewById(R.id.course_course_unit);
+            courseNullMessage = v.findViewById(R.id.nullMessage);
 
             //BuzzFragmentInitiate
             buzzCategory = v.findViewById(R.id.buzz_category);
@@ -90,28 +111,29 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
         }
     }
 
-    public ArrayList<Channel> instantiateChannel() {
-        Channels.add(new Channel("Computer Science 021", "CS_021", 149,
-                "University Of Nigeria", 5));
 
-        return Channels;
+
+    public void addCourse(String courseTitle, String courseCode, String lecturerName, String lecturerOffice,
+                          int lectureUnitLoad, String channelTag) {
+
+        Course newCourse = new Course(courseTitle, courseCode, lecturerName,
+                lecturerOffice, lectureUnitLoad, channelTag);
+
+        if (channelTag == Channels.get(currentIndex).getChannelTag()) {
+            Channels.get(currentIndex).channelCourses.add(newCourse);
+        }
+
     }
 
     public ArrayList<Lecture> instantiateLecture(String lecture) {
-//        lectureSchedules.add(new Lecture("Introduction to Life", "LFE101", "12:00",
-//                "14:00", "FPSLT", 2, 2, false, "mon"));
-//        lectureSchedules.add(new Lecture("Introduction to Programming", "COS101", "12:00",
-//                "14:00", "FPSLT", 3, 2, true, "sat"));
-//        lectureSchedules.add(new Lecture("Introduction to Life", "LFE101", "12:00",
-//                "16:00", "Carver Building", 4, 4, true, "sun"));
-//        lectureSchedules.add(new Lecture("General Studies", "GS101", "12:00",
-//                "14:00", "GS Building", 2, 2, false, "wed"));
-//        lectureSchedules.add(new Lecture("Electronics Functions", "EFI208", "9:00",
-//                "10:00", "New Engineering Annex", 1, 1, false, "thu"));
-        if (lectureSchedules.size() >= 1){
-            for (int i = 0; i < lectureSchedules.size(); i++) {
-                if (lectureSchedules.get(i).getDayOfTheWeek() == lecture) {
-                    lecturesInDay.add(lectureSchedules.get(i));
+
+        if (Channels.get(currentIndex).channelLectures.size() >= 1) {
+
+            lecturesInDay = new ArrayList<>();
+
+            for (int i = 0; i < Channels.get(currentIndex).channelLectures.size(); i++) {
+                if (Channels.get(currentIndex).channelLectures.get(i).getDayOfTheWeek() == lecture) {
+                    lecturesInDay.add(Channels.get(currentIndex).channelLectures.get(i));
                 }
             }
         }
@@ -119,73 +141,35 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
         return lecturesInDay;
     }
 
-    public ArrayList<Course> instantiateCourse() {
-//        Courses.add(new Course("Introduction to Programming II", "COS207",
-//                "Mr Ojukwu Anele John", "Room 311 Abuja Building", 4));
-//        Courses.add(new Course("Agricultural Practices III", "AGR251",
-//                "Mrs Elizabeth Macbeth", "Room 307 Carver Building", 2));
-//        Courses.add(new Course("General Studies Programme I", "GSP201",
-//                "Mr Stephen Pius", "Room 101 GS Building", 2));
-//        Courses.add(new Course("Physical Matter Properties and Nature I", "GSP205",
-//                "Mr Odemegwu Titus Paul", "Room 307 GS Building", 5));
-//        Courses.add(new Course("Introduction to Philosophy", "PHY211",
-//                "Miss Nnenna Helen", "Room 120 Arts Complex", 3));
-//        Courses.add(new Course("Introduction to Programming III", "COS211",
-//                "Mrs Amarachi Omemonu", "Room 300 Abuja Building", 5));
-//        Courses.add(new Course("Introduction to Python II", "COS301",
-//                "Mr Peters Jone John", "Room 400 Carver Building", 4));
-
-        return Courses;
-    }
-
-    public ArrayList<Buzzer> instantiateBuzz() {
-//        Buzzers.add(new Buzzer("cancel", "COS101 scheduled to hold on Monday has been canceled",
-//                "19:04"));
-//        Buzzers.add(new Buzzer("birthday", "It's Bright Michael's Birthday today! Wish him well",
-//                "19:50"));
-//        Buzzers.add(new Buzzer("fixed", "GS207 fixed class to hold this Monday, in the New Engineering Annex by 12:00",
-//                "20:20"));
-//        Buzzers.add(new Buzzer("other", "Compulsory Class Meeting scheduled to hold on the 25th of August, under the Mango Tree",
-//                " 23:00"));
-
-        return Buzzers;
-    }
-
-
-    public void add(int position, Channel channel) {
-        Channels.add(position, channel);
-        notifyItemInserted(position);
-    }
-
-    public void add(int position, Lecture lecture) {
-        lecturesInDay.add(position, lecture);
-        notifyItemInserted(position);
-    }
-
-    public void add(int position, Course course) {
-        Courses.add(position, course);
-        notifyItemInserted(position);
-    }
-
-    public void add(int position, Buzzer buzzer) {
-        Buzzers.add(position, buzzer);
-        notifyItemInserted(position);
-    }
-
-    public UniversalRecyclerAdapter(String filter, @Nullable String lectureDayOfTheWeek, @Nullable Context context) {
+    public UniversalRecyclerAdapter(String filter, @Nullable String lectureDayOfTheWeek, @Nullable Context context, int currentIndex) {
 
         this.filter = filter.toLowerCase();
 
+        this.currentIndex = new MainActivity().itemClicked;
+
+
         if (filter.toLowerCase().equals("channel")) {
             this.channelContext = context;
-            instantiateChannel();
+            returnChannel();
         } else if (filter.toLowerCase().equals("lecture")) {
             instantiateLecture(lectureDayOfTheWeek);
         } else if (filter.toLowerCase().equals("course")) {
-            instantiateCourse();
+            returnCourse();
         } else if (filter.toLowerCase().equals("buzz")) {
-            instantiateBuzz();
+            returnBuzz();
         }
+
+
+    }
+
+    private ArrayList<Channel> returnChannel(){
+        return resourceBox.ChannelResource;
+    }
+    private ArrayList<Course> returnCourse(){
+        return resourceBox.ChannelResource.get(currentIndex).channelCourses;
+    }
+    private ArrayList<Buzzer> returnBuzz(){
+        return resourceBox.ChannelResource.get(currentIndex).channelBuzzes;
     }
 
     @Override
@@ -194,12 +178,16 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
         View v;
         if (filter.equals("channel")) {
             v = inflater.inflate(R.layout.channel, parent, false);
+
         } else if (filter.equals("lecture")) {
             v = inflater.inflate(R.layout.lecture_item, parent, false);
+
         } else if (filter.equals("course")) {
             v = inflater.inflate(R.layout.courses_item, parent, false);
+
         } else {
             v = inflater.inflate(R.layout.buzz_item, parent, false);
+
         }
 
         ViewHolder vh = new ViewHolder(v);
@@ -213,58 +201,233 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
             if (Channels.size() != 0) {
                 holder.channelName.setText(Channels.get(position).getChannelName());
                 holder.channelTag.setText(Channels.get(position).getChannelTag());
-                holder.channelMembers.setText(Channels.get(position).getChannelMembers() + " classmate(s).");
+                if (Channels.get(position).getChannelMembers() == 1){
+                    holder.channelMembers.setText(Channels.get(position).getChannelMembers() + " classmate.");
+                }else{
+                    holder.channelMembers.setText(Channels.get(position).getChannelMembers() + " classmates.");
+                }
+
                 holder.channelLocation.setText(Channels.get(position).getChannelLocation());
                 if (Channels.get(position).getCurrentUnseenNotifications() == 0) {
                     holder.currentNewNotifications.setText("No new Notifications");
-                } else {
-                    holder.currentNewNotifications.setText(Channels.get(position).getCurrentUnseenNotifications() + " new notification(s)");
+                } else if (Channels.get(position).getCurrentUnseenNotifications() == 1) {
+                    holder.currentNewNotifications.setText(Channels.get(position).getCurrentUnseenNotifications() + " new notification.");
+                }else{
+                    holder.currentNewNotifications.setText(Channels.get(position).getCurrentUnseenNotifications() + " new notifications.");
+
                 }
 
                 holder.layout.setOnClickListener(new View.OnClickListener() {
+
                     @Override
                     public void onClick(View v) {
-                        ((MainActivity) channelContext).startIntent(position);
+                        if (mainActivity.getLayoutId().size() < 1){
+                            channelActivity.currentChannel = Channels.get(position).getChannelName();
+                            ((MainActivity) channelContext).startIntent(position);
+
+                        }else{
+                            mainActivity.channelAfterLongClick(holder.isSelected, holder.layout, position);
+                        }
+
                     }
                 });
 
+                holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+
+                        boolean outcome = mainActivity.channelOnLongCLick(holder.isSelected, holder.layout, position);
+
+                        if (outcome){
+                            return outcome;
+                        }else{
+                            return outcome;
+                        }
+
+//                        if(selected < 1){
+//
+//                            selectedItemPositions = new ArrayList<>();
+//                            selectedItemViews = new ArrayList<>();
+//
+//                            holder.layout.setBackgroundResource(R.drawable.ripple_mask_select);
+//                            selected += 1;
+//
+//                            mainActivity.channelsTitle.setVisibility(View.INVISIBLE);
+//                            mainActivity.numberSelected.setText(selected + " Selected");
+//                            mainActivity.numberSelected.setVisibility(View.VISIBLE);
+//                            mainActivity.cancelSelect.setVisibility(View.VISIBLE);
+//                            mainActivity.leaveChannels.setVisibility(View.VISIBLE);
+//
+//                            selectedItemPositions.add(position);
+//                            selectedItemViews.add(holder.layout);
+//
+//                            Channels.get(position).setTaken(true);
+//                            mainActivity.leaveChannels.setText("leave channel");
+//
+//                            return true;
+//                        }
+//                        return false;
+//                    }
+//                });
+//
+//                mainActivity.cancelSelect.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (selectedItemViews.size() != 0){
+//                            for (int i = 0; i < selectedItemPositions.size(); i++){
+//                                selectedItemViews.get(i).setBackgroundResource(R.drawable.ripple_mask);
+//                            }
+//                        }
+//                        mainActivity.channelsTitle.setVisibility(View.VISIBLE);
+//                        mainActivity.numberSelected.setVisibility(View.INVISIBLE);
+//                        mainActivity.cancelSelect.setVisibility(View.INVISIBLE);
+//                        mainActivity.leaveChannels.setVisibility(View.INVISIBLE);
+//
+//
+//                        selected = 0;
+//                        selectedItemViews = new ArrayList<>();
+//                        selectedItemPositions = new ArrayList<>();
+//
+//
+//                    }
+//                });
+//
+//                mainActivity.leaveChannels.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        for(int i = 0; i < selectedItemPositions.size(); i++){
+//                            selected -= 1;
+//
+//                            Channels.remove((int) selectedItemPositions.get(i));
+//                            notifyItemRemoved(selectedItemPositions.get(i));
+//                            notifyItemRangeChanged(selectedItemPositions.get(i), Channels.size());
+//
+//
+//
+////                            THIS IS THE PART WHERE THE SERVER IS NOTIFIED THAT AN ITEM HAS REMOVED
+////                            FROM THE ORIGINAL LIST
+//
+//                        }
+////
+//                        mainActivity.channelsTitle.setVisibility(View.VISIBLE);
+//                        mainActivity.numberSelected.setVisibility(View.INVISIBLE);
+//                        mainActivity.cancelSelect.setVisibility(View.INVISIBLE);
+//                        mainActivity.leaveChannels.setVisibility(View.INVISIBLE);
+//
+//
+//                        selected = 0;
+//                        selectedItemViews = new ArrayList<>();
+//                        selectedItemPositions = new ArrayList<>();
+                        }
+                });
+
             }
+
         } else if (filter.equals("lecture")) {
             if (lecturesInDay.size() != 0) {
                 holder.courseTitle.setText(lecturesInDay.get(position).getCourseTitle());
                 holder.courseCode.setText(lecturesInDay.get(position).getCourseCode());
-                holder.unitLoad.setText(lecturesInDay.get(position).getUnitLoad() + " unit(s)");
+                if (lecturesInDay.get(position).getUnitLoad() != 1){
+                    holder.unitLoad.setText(lecturesInDay.get(position).getUnitLoad() + " units");
+                }else{
+                    holder.unitLoad.setText(lecturesInDay.get(position).getUnitLoad() + " unit");
+                }
                 holder.location.setText(lecturesInDay.get(position).getLocation());
-                holder.duration.setText(lecturesInDay.get(position).getLectureDuration() + "hr(s)");
-                holder.timeDifference.setText(lecturesInDay.get(position).getStartTime() + " - " + lectureSchedules.get(position).getEndTime());
+                if (lecturesInDay.get(position).getLectureDuration() != 1){
+                    holder.duration.setText(lecturesInDay.get(position).getLectureDuration() + "hrs");
+                }else{
+                    holder.duration.setText(lecturesInDay.get(position).getLectureDuration() + "hr");
+                }
+                holder.timeDifference.setText(lecturesInDay.get(position).getStartTime() + " - " + Channels.get(currentIndex).channelLectures.get(position).getEndTime());
 
                 if (lecturesInDay.get(position).isFixed()) {
                     holder.isFixed.setText("fixed");
                 } else {
                     holder.isFixed.setText("regular");
                 }
+            }else{
+                holder.lectureNullMessage.setText("No Lectures today click the + button to add");
             }
         } else if (filter.equals("course")) {
-            if (Courses.size() != 0) {
-                holder.courses_courseTitle.setText(Courses.get(position).getCourseTitle());
-                holder.courses_courseCode.setText(Courses.get(position).getCourseCode());
-                holder.lecturerName.setText(Courses.get(position).getLecturerName());
-                holder.lecturerOffice.setText(Courses.get(position).getLecturerOffice());
-                holder.courseUnitLoad.setText(Courses.get(position).getLectureUnitLoad() + " unit(s)");
 
-            }
+            final CoursesFragmentActivity coursesFragmentActivity = new CoursesFragmentActivity();
+
+            final View modalView = coursesFragmentActivity.view;
+            final TextView title = modalView.findViewById(R.id.addCourseTitle);
+            final TextView lecturerName = modalView.findViewById(R.id.addLecturerName);
+            final TextView lecturerOffice = modalView.findViewById(R.id.addLecturerOffice);
+            final TextView courseCode = modalView.findViewById(R.id.addCourseCode);
+            final TextView courseUnit = modalView.findViewById(R.id.addCourseUnit);
+
+//            modalView.findViewById(R.id.addCourse).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    coursesFragmentActivity.alertDialog.hide();
+//
+//                    Course newCourse = new Course(title.getText().toString(),
+//                            courseCode.getText().toString(),
+//                            lecturerName.getText().toString(),
+//                            lecturerOffice.getText().toString(),
+//                            1, Channels.get(currentIndex).getChannelTag());
+//
+//
+//                    Channels.get(currentIndex).channelCourses.add(newCourse);
+//                    notifyItemInserted(Channels.get(currentIndex).channelCourses.size()-1);
+//
+//
+//                    if (noCourse){
+//                        Channels.get(currentIndex).channelCourses.remove(0);
+//                        notifyItemRemoved(0);
+////                        notifyItemRangeChanged(0,  Channels.get(currentIndex).channelCourses.size());
+//
+//                        noCourse = false;
+//
+//                    }
+//
+////                    notifyItemRangeChanged(0, Channels.get(currentIndex).channelCourses.size());
+////                        notifyItemInserted(0);
+//
+//
+//                    //Empty the modal
+//                    title.setText(""); lecturerName.setText(""); lecturerOffice.setText(""); courseCode.setText(""); courseUnit.setText("");
+//
+//                }
+//            });
+//
+//
+//
+//
+//            if (!noCourse) {
+//
+////                holder.course_courseTitle.setText(Channels.get(currentIndex).channelCourses.get(position).getCourseTitle());
+////                holder.course_courseCode.setText(Channels.get(currentIndex).channelCourses.get(position).getCourseCode());
+////                holder.lecturerName.setText(Channels.get(currentIndex).channelCourses.get(position).getLecturerName());
+////                holder.lecturerOffice.setText(Channels.get(currentIndex).channelCourses.get(position).getLecturerOffice());
+////                if (Channels.get(currentIndex).channelCourses.get(position).getLectureUnitLoad() != 1){
+////                    holder.courseUnitLoad.setText(Channels.get(currentIndex).channelCourses.get(position).getLectureUnitLoad() + " units");
+////                }else{
+////                    holder.courseUnitLoad.setText(Channels.get(currentIndex).channelCourses.get(position).getLectureUnitLoad() + " unit");
+////                }
+//
+//
+//            }else{
+//                Log.d(TAG, "onBindViewHolder: Got to the else part of the course");
+//                holder.courseNullMessage.setText("No Courses Added yet click the + button to add!");
+//            }
         } else if (filter.equals("buzz")) {
-            if (Buzzers.size() != 0) {
-                holder.buzzDescription.setText(Buzzers.get(position).getBuzzDetail());
-                holder.buzzTime.setText(Buzzers.get(position).getBuzzTime());
+            if (Channels.get(currentIndex).channelBuzzes.size() != 0) {
+                holder.buzzDescription.setText(Channels.get(currentIndex).channelBuzzes.get(position).getBuzzDetail());
+                holder.buzzTime.setText(Channels.get(currentIndex).channelBuzzes.get(position).getBuzzTime());
 
-                if (Buzzers.get(position).getCategory().toLowerCase() == "birthday") {
+                if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "birthday") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_cake_black_24dp);
 
-                } else if (Buzzers.get(position).getCategory().toLowerCase() == "fixed") {
+                } else if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "fixed") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_offline_pin_black_24dp);
 
-                } else if (Buzzers.get(position).getCategory().toLowerCase() == "cancel") {
+                } else if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "cancel") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_cancel_black_24dp);
 
                 } else {
@@ -273,7 +436,6 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
                 }
             }
         }
-
     }
 
     @Override
@@ -283,8 +445,8 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
         } else if (filter == "lecture") {
             return lecturesInDay.size();
         } else if (filter == "course") {
-            return Courses.size();
+            return Channels.get(currentIndex).channelCourses.size();
         }
-        return Buzzers.size();
+        return Channels.get(currentIndex).channelBuzzes.size();
     }
 }

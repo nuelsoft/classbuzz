@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="offset_one">68dp</dimen>
+    <dimen name="offset_two">130dp</dimen>
+    <dimen name="fabCustom"> 65dp</dimen>
+    <dimen name="fabCustomTwo">60dp</dimen>
+</resources>

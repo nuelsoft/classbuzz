@@ -1,5 +1,6 @@
 package android.nuel.buzz;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,7 +30,7 @@ public class LecturesSaturdayFragment extends Fragment {
         recyclerView = v.findViewById(R.id.dayRecycler);
         nullLecture = v.findViewById(R.id.nullLecture);
 
-        recyclerAdapter = new UniversalRecyclerAdapter("lecture","sat",null);
+        recyclerAdapter = new UniversalRecyclerAdapter("lecture","sat",null, new ChannelActivity().position);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerLayout = new GridLayoutManager(context,1);
         recyclerView.setLayoutManager(recyclerLayout);

@@ -29,7 +29,7 @@ public class LecturesThursdayFragment extends Fragment {
         recyclerView = v.findViewById(R.id.dayRecycler);
         nullLecture = v.findViewById(R.id.nullLecture);
 
-        recyclerAdapter = new UniversalRecyclerAdapter("lecture","thu",null);
+        recyclerAdapter = new UniversalRecyclerAdapter("lecture","thu",null, new ChannelActivity().position);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerLayout = new GridLayoutManager(this.getActivity(),1);
         recyclerView.setLayoutManager(recyclerLayout);

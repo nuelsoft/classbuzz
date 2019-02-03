@@ -3,4 +3,7 @@
     <color name="colorPrimary">#bf360c</color>
     <color name="colorPrimaryDark">#bf360c</color>
     <color name="colorAccent">#3e2723</color>
+
+    <color name="channelBackground">#ededed</color>
+
 </resources>

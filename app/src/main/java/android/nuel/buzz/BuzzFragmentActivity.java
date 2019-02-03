@@ -2,6 +2,7 @@ package android.nuel.buzz;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +12,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class BuzzFragmentActivity extends Fragment{
+    FloatingActionButton sendNews;
     RecyclerView recyclerView;
     RecyclerView.Adapter recyclerAdapter;
     RecyclerView.LayoutManager recyclerLayout;
     TextView nullBuzz;
     Context context = new ChannelActivity();
+
+    ChannelActivity channelActivity = new ChannelActivity();
+    ResourceBox resourceBox= new ResourceBox();
+
     public BuzzFragmentActivity() {
     }
 
@@ -27,8 +33,15 @@ public class BuzzFragmentActivity extends Fragment{
 
         recyclerView = v.findViewById(R.id.buzz_recyclerview);
         nullBuzz = v.findViewById(R.id.nullBuzz);
+        sendNews = v.findViewById(R.id.sendNewsLetter);
 
-        recyclerAdapter = new UniversalRecyclerAdapter("buzz",null,null);
+        if (resourceBox.ChannelResource.get(channelActivity.position).isAdmin()){
+            sendNews.setVisibility(View.VISIBLE);
+        }else{
+            sendNews.setVisibility(View.INVISIBLE);
+        }
+
+        recyclerAdapter = new UniversalRecyclerAdapter("buzz",null,null, new ChannelActivity().position);
 
         if (recyclerAdapter.getItemCount() == 0){
             nullBuzz.setVisibility(View.VISIBLE);

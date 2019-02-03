@@ -2,6 +2,7 @@ package android.nuel.buzz;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,10 @@ public class LecturesFragmentActivity extends Fragment {
 
     TabLayout tabLayout;
     ViewPager viewPager;
+    FloatingActionButton addFab;
 
+    ChannelActivity channelActivity = new ChannelActivity();
+    ResourceBox resourceBox = new ResourceBox();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,7 +29,13 @@ public class LecturesFragmentActivity extends Fragment {
 
         viewPager = v.findViewById(R.id.lectures_viewPager);
         tabLayout = v.findViewById(R.id.daySelectionTab);
+        addFab = v.findViewById(R.id.lectureAdd);
 
+        if(resourceBox.ChannelResource.get(channelActivity.position).isAdmin()){
+            addFab.setVisibility(View.VISIBLE);
+        }else{
+            addFab.setVisibility(View.INVISIBLE);
+        }
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
