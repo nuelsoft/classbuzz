@@ -26,13 +26,12 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
 
     ResourceBox resourceBox = new ResourceBox();
 
-
-    private ArrayList<Channel> Channels = resourceBox.ChannelResource;
     Context channelContext;
-
     String filter;
     int currentIndex;
     private ArrayList<Lecture> lecturesInDay = new ArrayList<>();
+    private ArrayList<Channel> dataSet;
+
     private static final String TAG = "UniversalRecyclerAdater";
 
     ChannelActivity channelActivity = new ChannelActivity();
@@ -112,39 +111,10 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
     }
 
 
-
-    public void addCourse(String courseTitle, String courseCode, String lecturerName, String lecturerOffice,
-                          int lectureUnitLoad, String channelTag) {
-
-        Course newCourse = new Course(courseTitle, courseCode, lecturerName,
-                lecturerOffice, lectureUnitLoad, channelTag);
-
-        if (channelTag == Channels.get(currentIndex).getChannelTag()) {
-            Channels.get(currentIndex).channelCourses.add(newCourse);
-        }
-
-    }
-
-    public ArrayList<Lecture> instantiateLecture(String lecture) {
-
-        if (Channels.get(currentIndex).channelLectures.size() >= 1) {
-
-            lecturesInDay = new ArrayList<>();
-
-            for (int i = 0; i < Channels.get(currentIndex).channelLectures.size(); i++) {
-                if (Channels.get(currentIndex).channelLectures.get(i).getDayOfTheWeek() == lecture) {
-                    lecturesInDay.add(Channels.get(currentIndex).channelLectures.get(i));
-                }
-            }
-        }
-
-        return lecturesInDay;
-    }
-
-    public UniversalRecyclerAdapter(String filter, @Nullable String lectureDayOfTheWeek, @Nullable Context context, int currentIndex) {
+    public UniversalRecyclerAdapter(String filter, @Nullable String lectureDayOfTheWeek, @Nullable Context context, ArrayList dataSet) {
 
         this.filter = filter.toLowerCase();
-
+        this.dataSet = dataSet;
         this.currentIndex = new MainActivity().itemClicked;
 
 
@@ -162,14 +132,42 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
 
     }
 
+    public void addCourse(String courseTitle, String courseCode, String lecturerName, String lecturerOffice,
+                          int lectureUnitLoad, String channelTag) {
+
+        Course newCourse = new Course(courseTitle, courseCode, lecturerName,
+                lecturerOffice, lectureUnitLoad, channelTag);
+
+        if (channelTag == dataSet.get(currentIndex).getChannelTag()) {
+            dataSet.get(currentIndex).channelCourses.add(newCourse);
+        }
+
+    }
+
+    public ArrayList<Lecture> instantiateLecture(String lecture) {
+
+        if (dataSet.get(currentIndex).channelLectures.size() >= 1) {
+
+            lecturesInDay = new ArrayList<>();
+
+            for (int i = 0; i < dataSet.get(currentIndex).channelLectures.size(); i++) {
+                if (dataSet.get(currentIndex).channelLectures.get(i).getDayOfTheWeek() == lecture) {
+                    lecturesInDay.add(dataSet.get(currentIndex).channelLectures.get(i));
+                }
+            }
+        }
+
+        return lecturesInDay;
+    }
+
     private ArrayList<Channel> returnChannel(){
-        return resourceBox.ChannelResource;
+        return dataSet;
     }
     private ArrayList<Course> returnCourse(){
-        return resourceBox.ChannelResource.get(currentIndex).channelCourses;
+        return dataSet.get(currentIndex).channelCourses;
     }
     private ArrayList<Buzzer> returnBuzz(){
-        return resourceBox.ChannelResource.get(currentIndex).channelBuzzes;
+        return dataSet.get(currentIndex).channelBuzzes;
     }
 
     @Override
@@ -198,22 +196,22 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         if (filter.equals("channel")) {
-            if (Channels.size() != 0) {
-                holder.channelName.setText(Channels.get(position).getChannelName());
-                holder.channelTag.setText(Channels.get(position).getChannelTag());
-                if (Channels.get(position).getChannelMembers() == 1){
-                    holder.channelMembers.setText(Channels.get(position).getChannelMembers() + " classmate.");
+            if (dataSet.size() != 0) {
+                holder.channelName.setText(dataSet.get(position).getChannelName());
+                holder.channelTag.setText(dataSet.get(position).getChannelTag());
+                if (dataSet.get(position).getChannelMembers() == 1) {
+                    holder.channelMembers.setText(dataSet.get(position).getChannelMembers() + " classmate.");
                 }else{
-                    holder.channelMembers.setText(Channels.get(position).getChannelMembers() + " classmates.");
+                    holder.channelMembers.setText(dataSet.get(position).getChannelMembers() + " classmates.");
                 }
 
-                holder.channelLocation.setText(Channels.get(position).getChannelLocation());
-                if (Channels.get(position).getCurrentUnseenNotifications() == 0) {
+                holder.channelLocation.setText(dataSet.get(position).getChannelLocation());
+                if (dataSet.get(position).getCurrentUnseenNotifications() == 0) {
                     holder.currentNewNotifications.setText("No new Notifications");
-                } else if (Channels.get(position).getCurrentUnseenNotifications() == 1) {
-                    holder.currentNewNotifications.setText(Channels.get(position).getCurrentUnseenNotifications() + " new notification.");
+                } else if (dataSet.get(position).getCurrentUnseenNotifications() == 1) {
+                    holder.currentNewNotifications.setText(dataSet.get(position).getCurrentUnseenNotifications() + " new notification.");
                 }else{
-                    holder.currentNewNotifications.setText(Channels.get(position).getCurrentUnseenNotifications() + " new notifications.");
+                    holder.currentNewNotifications.setText(dataSet.get(position).getCurrentUnseenNotifications() + " new notifications.");
 
                 }
 
@@ -222,7 +220,7 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
                     @Override
                     public void onClick(View v) {
                         if (mainActivity.getLayoutId().size() < 1){
-                            channelActivity.currentChannel = Channels.get(position).getChannelName();
+                            channelActivity.currentChannel = dataSet.get(position).getChannelName();
                             ((MainActivity) channelContext).startIntent(position);
 
                         }else{
@@ -339,7 +337,7 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
                 }else{
                     holder.duration.setText(lecturesInDay.get(position).getLectureDuration() + "hr");
                 }
-                holder.timeDifference.setText(lecturesInDay.get(position).getStartTime() + " - " + Channels.get(currentIndex).channelLectures.get(position).getEndTime());
+                holder.timeDifference.setText(lecturesInDay.get(position).getStartTime() + " - " + dataSet.get(currentIndex).channelLectures.get(position).getEndTime());
 
                 if (lecturesInDay.get(position).isFixed()) {
                     holder.isFixed.setText("fixed");
@@ -417,18 +415,31 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
 //                holder.courseNullMessage.setText("No Courses Added yet click the + button to add!");
 //            }
         } else if (filter.equals("buzz")) {
-            if (Channels.get(currentIndex).channelBuzzes.size() != 0) {
-                holder.buzzDescription.setText(Channels.get(currentIndex).channelBuzzes.get(position).getBuzzDetail());
-                holder.buzzTime.setText(Channels.get(currentIndex).channelBuzzes.get(position).getBuzzTime());
+            if (dataSet.get(currentIndex).channelBuzzes.size() != 0) {
+                holder.buzzDescription.setText(dataSet.get(currentIndex).channelBuzzes.get(position).getBuzzDetail());
+                holder.buzzTime.setText(dataSet.get(currentIndex).channelBuzzes.get(position).getBuzzTime());
 
-                if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "birthday") {
+                if (dataSet.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "birthday") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_cake_black_24dp);
 
-                } else if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "fixed") {
+                } else if (dataSet.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "fixed") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_offline_pin_black_24dp);
 
-                } else if (Channels.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "cancel") {
+                } else if (dataSet.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "cancel") {
                     holder.buzzCategory.setImageResource(R.drawable.ic_cancel_black_24dp);
+
+                } else if (dataSet.get(currentIndex).channelBuzzes.get(position).getCategory().toLowerCase() == "newsletter") {
+                    holder.buzzCategory.setImageResource(R.drawable.ic_assignment_black_24dp);
+                    holder.buzzDescription.setText(dataSet.get(currentIndex).channelBuzzes.get(position).getAuthor() + " published a news letter: " +
+                            dataSet.get(currentIndex).channelBuzzes.get(position).getNewsTitle().toUpperCase());
+
+                    holder.layout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            channelActivity.openNews(position);
+                        }
+                    });
+
 
                 } else {
                     holder.buzzCategory.setImageResource(R.drawable.ic_error_black_24dp);
@@ -441,12 +452,12 @@ public class UniversalRecyclerAdapter extends RecyclerView.Adapter<UniversalRecy
     @Override
     public int getItemCount() {
         if (filter == "channel") {
-            return Channels.size();
+            return dataSet.size();
         } else if (filter == "lecture") {
             return lecturesInDay.size();
         } else if (filter == "course") {
-            return Channels.get(currentIndex).channelCourses.size();
+            return dataSet.get(currentIndex).channelCourses.size();
         }
-        return Channels.get(currentIndex).channelBuzzes.size();
+        return dataSet.get(currentIndex).channelBuzzes.size();
     }
 }

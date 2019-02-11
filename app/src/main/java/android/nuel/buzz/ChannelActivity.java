@@ -10,10 +10,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,10 +39,17 @@ public class ChannelActivity extends AppCompatActivity {
     TextView titleBar;
     ImageView backButton;
 
+    public static AlertDialog alertDialog;
+    public static View view;
+    static AlertDialog.Builder builder;
+    static LayoutInflater layoutInflater;
+
+
     public static int position;
 
     private static final String TAG = "ChannelActivity";
     public static String currentChannel = "";
+    ResourceBox resourceBox = new ResourceBox();
 
     public Context ChannelActivity() {
         return this;
@@ -48,10 +60,6 @@ public class ChannelActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        receivedIntent = getIntent().getExtras();
-//        position = receivedIntent.getInt("CURRENT_INTENT");
 
         bottomNavigationView = findViewById(R.id.bottom_nav_layout);
         includedFragment = findViewById(R.id.includedFragment);
@@ -66,6 +74,7 @@ public class ChannelActivity extends AppCompatActivity {
 
         titleBar = findViewById(R.id.channelTitle);
         titleBar.setText(currentChannel);
+
 
 
         startLectureFragment();
@@ -90,6 +99,13 @@ public class ChannelActivity extends AppCompatActivity {
         });
 
 
+        layoutInflater = this.getLayoutInflater();
+        view = layoutInflater.inflate(R.layout.newsletter_full, null);
+
+        builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        builder.setCancelable(true);
+        alertDialog = builder.create();
 
     }
 
@@ -122,31 +138,44 @@ public class ChannelActivity extends AppCompatActivity {
 
     }
 
-//
-//    private void setupViewPager(@NonNull ViewPager viewPager) {
-//        TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-//
-//        pagerAdapter.addFragment(new LecturesFragmentActivity(), "Lectures");
-//        pagerAdapter.addFragment(new CoursesFragmentActivity(), "Courses");
-//        pagerAdapter.addFragment(new BuzzFragmentActivity(), "Buzz");
-//        viewPager.setAdapter(pagerAdapter);
-//
-//    }
+    public void openNews(int viewPosition) {
+        TextView newsDetail = view.findViewById(R.id.newsFullDetail);
+        newsDetail.setMovementMethod(new ScrollingMovementMethod());
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == android.R.id.home){
-//            finish();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.main_menu_resource, menu);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
+        String newsTitle = "<br /><b>" +
+                resourceBox.ChannelResource.get(position).channelBuzzes.get(viewPosition).getNewsTitle().toUpperCase() + "</b>";
+
+        String publisher = "<b><i>" +
+                resourceBox.ChannelResource.get(position).channelBuzzes.get(viewPosition).getAuthor() +
+                "</i></b>";
+        String newsProper = htmlFormatText(resourceBox.ChannelResource.get(position).channelBuzzes.get(viewPosition).getBuzzDetail());
+
+        String newsLetter = newsTitle + "<p>"
+                + newsProper + "<p> " +
+                "Published by " + publisher + "</p> </p>";
+
+        newsDetail.setText(Html.fromHtml(newsLetter));
+
+        alertDialog.show();
+    }
+
+    public String htmlFormatText(String toFormat) {
+
+        String htmlFormat = "";
+        char newLine = '\n';
+
+        for (int i = 0; i < toFormat.length(); i++) {
+            if ((int) toFormat.charAt(i) == (int) newLine) {
+                htmlFormat += "<br />";
+
+                Log.d(TAG, "htmlFormatText: " + htmlFormat);
+            } else {
+                htmlFormat += toFormat.substring(i, i + 1);
+            }
+        }
+
+        return htmlFormat;
+    }
 
 
 }

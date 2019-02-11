@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    ResourceBox resourceBox = new ResourceBox();
     private static boolean selectMode = false;
 
     TextView nullChannel;
@@ -52,15 +52,13 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<Integer> layoutId = new ArrayList<>();
     private static ArrayList<RecyclerItem> recyclerItems = new ArrayList<>();
 
+    ChannelActivity channelActivity = new ChannelActivity();
+
     RecyclerView channelRecyclerView;
 
     RecyclerView.Adapter recyclerAdapter;
     RecyclerView.LayoutManager layoutManager;
     View fragmentContainer;
-
-
-    ResourceBox resourceBox = new ResourceBox();
-
 
     public static int itemClicked;
 
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         channelRecyclerView = findViewById(R.id.channelRecyclerView);
 
 
-        recyclerAdapter = new UniversalRecyclerAdapter("channel", null, this, -1);
+        recyclerAdapter = new UniversalRecyclerAdapter("channel", null, this, resourceBox.ChannelResource);
         channelRecyclerView.setAdapter(recyclerAdapter);
         layoutManager = new GridLayoutManager(this, 1);
         channelRecyclerView.setLayoutManager(layoutManager);
@@ -192,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
         if (!isFabMenuOpen && fragmentContainer.getVisibility() != View.VISIBLE) {
             intent = new Intent(this, ChannelActivity.class);
             Log.d(TAG, "startIntent: position being parsed is : " + position);
+            channelActivity.position = position;
+
             itemClicked = position;
             startActivity(intent);
 

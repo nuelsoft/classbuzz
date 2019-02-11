@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LecturesSundayFragment extends Fragment {
+    ResourceBox resourceBox = new ResourceBox();
     public LecturesSundayFragment() {
     }
 
@@ -33,8 +34,7 @@ public class LecturesSundayFragment extends Fragment {
         nullLecture = v.findViewById(R.id.nullLecture);
 
 
-
-        recyclerAdapter = new UniversalRecyclerAdapter("lecture","sun", null, new ChannelActivity().position);
+        recyclerAdapter = new UniversalRecyclerAdapter("lecture", "sun", null, resourceBox.ChannelResource);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerLayout = new GridLayoutManager(this.getActivity(),1);
         recyclerView.setLayoutManager(recyclerLayout);

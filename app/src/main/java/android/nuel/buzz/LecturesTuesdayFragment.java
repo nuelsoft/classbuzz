@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 public class LecturesTuesdayFragment extends Fragment {
 
+    ResourceBox resourceBox = new ResourceBox();
     public LecturesTuesdayFragment() {
     }
     RecyclerView recyclerView;
@@ -30,7 +31,7 @@ public class LecturesTuesdayFragment extends Fragment {
         recyclerView = v.findViewById(R.id.dayRecycler);
         nullLecture = v.findViewById(R.id.nullLecture);
 
-        recyclerAdapter = new UniversalRecyclerAdapter("lecture","tue",null, new ChannelActivity().position);
+        recyclerAdapter = new UniversalRecyclerAdapter("lecture", "tue", null, resourceBox.ChannelResource);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerLayout = new GridLayoutManager(this.getContext(),1);
         recyclerView.setLayoutManager(recyclerLayout);

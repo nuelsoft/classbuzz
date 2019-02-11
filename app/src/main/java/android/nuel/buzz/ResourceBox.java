@@ -1,5 +1,7 @@
 package android.nuel.buzz;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class ResourceBox {
@@ -65,13 +67,13 @@ public class ResourceBox {
 
 
         addBuzz("cancel", "COS101 scheduled to hold on Monday has been canceled",
-                "19:04", "CS_021");
+                "19:04", "CS_021", null, null);
         addBuzz("birthday", "It's Bright Michael's Birthday today! Wish him well",
-                "19:50", "CS_021");
+                "19:50", "CS_021", null, null);
         addBuzz("fixed", "GS207 fixed class to hold this Monday, in the New Engineering Annex by 12:00",
-                "20:20", "CS_021");
+                "20:20", "CS_021", null, null);
         addBuzz("other", "Compulsory Class Meeting scheduled to hold on the 25th of August, under the Mango Tree",
-                " 23:00", "HAN_022");
+                " 23:00", "HAN_022", null, null);
 
     }
 
@@ -105,15 +107,35 @@ public class ResourceBox {
         }
     }
 
-    public void addBuzz(String category, String buzzDetail, String buzzTime, String channelTag) {
-        
-        Buzzer newBuzz = new Buzzer(category, buzzDetail, buzzTime, channelTag);
+    public void addBuzz(String category, String buzzDetail, String buzzTime, String channelTag, @Nullable String author, @Nullable String newsTitle) {
+
+        Buzzer newBuzz = new Buzzer(category, buzzDetail, buzzTime, channelTag, author, newsTitle);
 
         for (int i = 0; i < ChannelResource.size(); i++) {
             if (ChannelResource.get(i).getChannelTag() == channelTag){
-                ChannelResource.get(i).channelBuzzes.add(newBuzz);
+
+                if (ChannelResource.get(i).channelBuzzes.size() == 0) {
+                    ChannelResource.get(i).channelBuzzes.add(newBuzz);
+                } else {
+                    ArrayList<Buzzer> tempBuzz = new ArrayList<>();
+
+                    for (int j = 0; j < ChannelResource.get(i).channelBuzzes.size(); j++) {
+                        tempBuzz.add(ChannelResource.get(i).channelBuzzes.get(j));
+                    }
+
+                    ChannelResource.get(i).channelBuzzes = new ArrayList<>();
+
+                    ChannelResource.get(i).channelBuzzes.add(newBuzz);
+                    for (int k = 0; k < tempBuzz.size(); k++) {
+                        ChannelResource.get(i).channelBuzzes.add(tempBuzz.get(k));
+                    }
+                }
+
+
+
             }
         }
+
     }
 
     public void addChannel(Channel channel){

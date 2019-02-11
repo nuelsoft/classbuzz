@@ -45,7 +45,7 @@ public class CoursesFragmentActivity extends Fragment{
 
         recyclerView = v.findViewById(R.id.courses_recyclerView);
         nullCourses = v.findViewById(R.id.nullCourses);
-        recyclerAdapter = new UniversalRecyclerAdapter("course",null,null, new ChannelActivity().position);
+        recyclerAdapter = new UniversalRecyclerAdapter("course", null, null, resourceBox.ChannelResource);
         addCourses = v.findViewById(R.id.coursesFragmentfab);
 
         if (recyclerAdapter.getItemCount() == 0){
